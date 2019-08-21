@@ -96,8 +96,8 @@ class ExplorerModel():
         trans_mat = transformations.translation_matrix(translation)
         trans_mat =  torch.from_numpy(trans_mat).float()
         rot_mat = torch.from_numpy(rot_mat).float()
-        out = torch.matmul(base_pose, rot_mat)
-        out = torch.matmul(trans_mat, out)
+        out = torch.matmul(trans_mat, base_pose)
+        out = torch.matmul(rot_mat, out)
         return out
 
     def request_image(self, pose):
