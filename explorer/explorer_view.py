@@ -100,9 +100,9 @@ class ExplorerView(tk.Frame):
                     'X': [self.create_set_translation_fun(0), -10, 10, 0.1],
                     'Y': [self.create_set_translation_fun(1), -10, 10, 0.1],
                     'Z': [self.create_set_translation_fun(2), -10, 10, 0.1],
-                    'Pitch': [self.create_set_rotation_fun(0), -1, 1, 0.01],
-                    'Yaw': [self.create_set_rotation_fun(1), -1, 1, 0.01],
-                    'Roll': [self.create_set_rotation_fun(2), -1, 1, 0.01],
+                    'Pitch': [self.create_set_rotation_fun(0), -np.pi, np.pi, 0.01],
+                    'Yaw': [self.create_set_rotation_fun(1), -np.pi, np.pi, 0.01],
+                    'Roll': [self.create_set_rotation_fun(2), -np.pi, np.pi, 0.01],
                     }
         self.sliders = {}
         for key in sliders:
