@@ -19,65 +19,8 @@ from projection import ProjectionHelper
 import explorer_model
 import explorer_view
 
+
 def main():
-    opt = parse_args()
-    device = torch.device('cuda')
-
-    exp_model = explorer_model.ExplorerModel(opt)
-
-
-    # Create the training dataset loader
-    dataset = TestDataset(pose_dir=os.path.join(opt.data_root, 'pose'))
-
-
-    dataloader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=4)
-
-    dir_name = os.path.join(datetime.datetime.now().strftime('%m_%d'),
-                            datetime.datetime.now().strftime('%H-%M-%S_') +
-                            '_'.join(opt.checkpoint.strip('/').split('/')[-2:]) + '_'
-                            + opt.data_root.strip('/').split('/')[-1])
-
-    traj_dir = os.path.join(opt.logging_root, 'test_traj', dir_name)
-    depth_dir = os.path.join(traj_dir, 'depth')
-
-    data_util.cond_mkdir(traj_dir)
-    data_util.cond_mkdir(depth_dir)
-
-    forward_time = 0.
-
-    print('starting testing...')
-    with torch.no_grad():
-        iter = 0
-        depth_imgs = []
-        for trgt_pose in dataloader:
-            # exec(util.embed_breakpoint())
-            start = time.time()
-
-            output_img, depth_img = exp_model.request_image(trgt_pose)
-
-            end = time.time()
-            forward_time += end - start
-
-            print("Iter %d" % iter)
-
-            depth_imgs.append(depth_img)
-            # exec(util.embed_breakpoint())
-            cv2.imwrite(os.path.join(traj_dir, "img_%05d.png" % iter), output_img.astype(np.uint8)[:, :, ::-1])
-
-            iter += 1
-
-        depth_imgs = np.stack(depth_imgs, axis=0)
-        depth_imgs = (depth_imgs - np.amin(depth_imgs)) / (np.amax(depth_imgs) - np.amin(depth_imgs))
-        depth_imgs *= 2**8 - 1
-        depth_imgs = depth_imgs.round()
-
-        for i in range(len(depth_imgs)):
-            cv2.imwrite(os.path.join(depth_dir, "img_%05d.png" % i), depth_imgs[i].astype(np.uint8))
-
-    print("Average forward pass time over %d examples is %f"%(iter, forward_time/iter))
-
-
-def main_2():
     opt = parse_args()
     device = torch.device('cuda')
 
@@ -85,8 +28,6 @@ def main_2():
     root = tk.Tk()
     explorer_view.ExplorerView(opt, exp_model, root).pack(side="top", fill="both", expand=True)
     root.mainloop()
-
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -132,4 +73,4 @@ def parse_args():
     return opt
 
 if __name__ == "__main__":
-    main_2()
+    main()
