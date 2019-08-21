@@ -22,6 +22,7 @@ class ExplorerModel():
         self.device = torch.device('cuda')
         self._init_model(opt)
         self.pose_dataset = TestDataset(pose_dir=os.path.join(opt.data_root, 'pose'))
+        self.base_pose = self.pose_dataset[0]
 
     def _init_model(self, opt):
         input_image_dims = [opt.img_sidelength, opt.img_sidelength]
@@ -89,15 +90,18 @@ class ExplorerModel():
         util.custom_load(self.model, opt.checkpoint)
         self.model.eval()
 
+    def set_base_pose(self, pose):
+        new_base_pose = self.matrix_4x4_from_raw_pose(pose)
+        self.base_pose = new_base_pose
+
     def matrix_4x4_from_raw_pose(self, pose):
-        base_pose = self.pose_dataset[0]
         translation, euler = pose
         rot_mat = transformations.euler_matrix(euler[0], euler[1], euler[2])
         trans_mat = transformations.translation_matrix(translation)
         trans_mat =  torch.from_numpy(trans_mat).float()
         rot_mat = torch.from_numpy(rot_mat).float()
-        out = torch.matmul(trans_mat, rot_mat)
-        out = torch.matmul(base_pose, out)
+        out = torch.matmul(rot_mat, trans_mat)
+        out = torch.matmul(self.base_pose, out)
         return out
 
     def request_image(self, pose):

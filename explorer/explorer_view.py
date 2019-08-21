@@ -74,8 +74,6 @@ class ExplorerView(tk.Frame):
             translation[2] += update_resolution
         elif char == 's':
             translation[2] -= update_resolution
-        elif char == 's':
-            translation[2] += update_resolution
         elif char == 'a':
             translation[0] -= update_resolution
         elif char == 'd':
@@ -85,7 +83,10 @@ class ExplorerView(tk.Frame):
     def _init_buttons(self):
         self.clear_button = tk.Button(self, text="Reset values",
                                         command=self.reset_values)
+        self.rebase_button = tk.Button(self, text="Rebase",
+                                        command=self.rebase_pose)
         self.clear_button.pack()
+        self.rebase_button.pack()
 
     def _init_image_view(self):
         self.image_view = tk.Canvas(self, width=self.canvas_width, height=self.canvas_height, bg='black')
@@ -147,3 +148,7 @@ class ExplorerView(tk.Frame):
     def reset_values(self):
         self.translation = np.zeros(3)
         self.rotation = np.zeros(3)
+
+    def rebase_pose(self):
+        self.model.set_base_pose([self.translation, self.rotation])
+        self.reset_values()
