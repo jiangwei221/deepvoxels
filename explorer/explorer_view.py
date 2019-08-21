@@ -71,6 +71,8 @@ class ExplorerView(tk.Frame):
         update_resolution = 0.05
         translation = self.translation
         if char == 'w':
+            translation[2] += update_resolution
+        elif char == 's':
             translation[2] -= update_resolution
         elif char == 's':
             translation[2] += update_resolution
