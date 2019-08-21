@@ -92,7 +92,7 @@ class ExplorerView(tk.Frame):
         self.image_view = tk.Canvas(self, width=self.canvas_width, height=self.canvas_height, bg='black')
         self.image_data = None
         self.image_view.pack()
-        init_image = imageio.imread('./background.png')
+        init_image = np.zeros([self.canvas_height, self.canvas_width, 3], dtype=np.uint8)
         init_image = Image.fromarray(init_image)
         init_image = init_image.resize((self.canvas_width, self.canvas_height), Image.ANTIALIAS)
         self.image_data = ImageTk.PhotoImage(init_image)
