@@ -9,6 +9,21 @@ import subprocess
 
 import torch.nn.functional as F
 
+import util
+
+def embed_breakpoint(terminate=True):
+    embedding = ('import IPython\n'
+                 'import matplotlib.pyplot as plt\n'
+                 'IPython.embed()\n'
+                 )
+    if terminate:
+        embedding += (
+            'assert 0, \'force termination\'\n'
+        )
+
+    return embedding
+
+
 def backproject(ux, uy, depth, intrinsic):
     '''Given a point in pixel coordinates plus depth gives the coordinates of the imaged point in camera coordinates
     '''
@@ -33,13 +48,13 @@ def parse_intrinsics(filepath, trgt_sidelength, invert_y=False):
 
     if world2cam_poses is None:
         world2cam_poses = False
-
+    # exec(util.embed_breakpoint())
     world2cam_poses = bool(world2cam_poses)
 
     cx = cx / width * trgt_sidelength
     cy = cy / height * trgt_sidelength
     f = trgt_sidelength / height * f
-
+    # exec(util.embed_breakpoint())
     fx = f
     if invert_y:
         fy = -f
