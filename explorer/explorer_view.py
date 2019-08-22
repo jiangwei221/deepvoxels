@@ -126,6 +126,11 @@ class ExplorerView(tk.Frame):
             image = image.round().clip(0, 255)
             image = image.astype(np.uint8)
             image = Image.fromarray(image)
+            draw = ImageDraw.Draw(image)
+            draw.ellipse((self.canvas_width // 2 - 5,
+                        self.canvas_height // 2 - 5, 
+                        self.canvas_width // 2 + 5,
+                        self.canvas_height // 2 + 5), fill='red', outline='red')
             self.image_data = ImageTk.PhotoImage(image)
             self.image_view.create_image(0, 0, anchor="nw", image=self.image_data)
         except ValueError:
